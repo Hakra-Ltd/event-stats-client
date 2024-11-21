@@ -18,7 +18,7 @@ import re  # noqa: F401
 import json
 
 from pydantic import BaseModel, ConfigDict, StrictInt, StrictStr
-from typing import Any, ClassVar, Dict, List
+from typing import Any, ClassVar, Dict, List, Optional
 from event_stats_client.models.event_source import EventSource
 from typing import Optional, Set
 from typing_extensions import Self
@@ -31,10 +31,10 @@ class EventStoreStatsRequestSchema(BaseModel):
     event_source: EventSource
     event_timestamp: StrictStr
     venue_size: StrictInt
-    available_seats: Dict[str, Any]
-    change_seats: Dict[str, Any]
-    update_seats: Dict[str, Any]
-    __properties: ClassVar[List[str]] = ["event_id", "event_source", "event_timestamp", "venue_size", "available_seats", "change_seats", "update_seats"]
+    available_seats: Optional[Dict[str, Any]]
+    update_seats: Optional[Dict[str, Any]]
+    sold_seats: Optional[Dict[str, Any]]
+    __properties: ClassVar[List[str]] = ["event_id", "event_source", "event_timestamp", "venue_size", "available_seats", "update_seats", "sold_seats"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -75,6 +75,21 @@ class EventStoreStatsRequestSchema(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # set to None if available_seats (nullable) is None
+        # and model_fields_set contains the field
+        if self.available_seats is None and "available_seats" in self.model_fields_set:
+            _dict['available_seats'] = None
+
+        # set to None if update_seats (nullable) is None
+        # and model_fields_set contains the field
+        if self.update_seats is None and "update_seats" in self.model_fields_set:
+            _dict['update_seats'] = None
+
+        # set to None if sold_seats (nullable) is None
+        # and model_fields_set contains the field
+        if self.sold_seats is None and "sold_seats" in self.model_fields_set:
+            _dict['sold_seats'] = None
+
         return _dict
 
     @classmethod
@@ -92,8 +107,8 @@ class EventStoreStatsRequestSchema(BaseModel):
             "event_timestamp": obj.get("event_timestamp"),
             "venue_size": obj.get("venue_size"),
             "available_seats": obj.get("available_seats"),
-            "change_seats": obj.get("change_seats"),
-            "update_seats": obj.get("update_seats")
+            "update_seats": obj.get("update_seats"),
+            "sold_seats": obj.get("sold_seats")
         })
         return _obj
 
