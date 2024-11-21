@@ -17,6 +17,7 @@ import pprint
 import re  # noqa: F401
 import json
 
+from datetime import datetime
 from pydantic import BaseModel, ConfigDict, StrictInt, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
 from event_stats_client.models.event_source import EventSource
@@ -29,7 +30,7 @@ class EventStoreStatsRequestSchema(BaseModel):
     """ # noqa: E501
     event_id: StrictStr
     event_source: EventSource
-    event_timestamp: StrictStr
+    event_timestamp: datetime
     venue_size: StrictInt
     available_seats: Optional[Dict[str, Any]]
     update_seats: Optional[Dict[str, Any]]
