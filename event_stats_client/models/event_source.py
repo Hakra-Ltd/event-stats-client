@@ -26,9 +26,10 @@ class EventSource(str, Enum):
     """
     allowed enum values
     """
-    TICKETMASTER_FACET = 'ticketmaster_facet'
+    TICKETMASTER_MINUS_MAP = 'ticketmaster-map'
+    TICKETMASTER_MINUS_FACET = 'ticketmaster-facet'
     VIVIDSEATS = 'vividseats'
-    EVENUE = 'evenue'
+    EVENUE_MINUS_SEAT = 'evenue-seat'
 
     @classmethod
     def from_json(cls, json_str: str) -> Self:
