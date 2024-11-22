@@ -19,8 +19,10 @@ import json
 
 from datetime import datetime
 from pydantic import BaseModel, ConfigDict, StrictInt, StrictStr
-from typing import Any, ClassVar, Dict, List, Optional
+from typing import Any, ClassVar, Dict, List
+from event_stats_client.models.change_seat import ChangeSeat
 from event_stats_client.models.event_source import EventSource
+from event_stats_client.models.seat_price import SeatPrice
 from typing import Optional, Set
 from typing_extensions import Self
 
@@ -28,14 +30,14 @@ class EventStoreStatsRequestSchema(BaseModel):
     """
     EventStoreStatsRequestSchema
     """ # noqa: E501
+    changed_listings: List[ChangeSeat]
+    removed_listings: List[SeatPrice]
+    new_listings: List[SeatPrice]
     event_id: StrictStr
     event_source: EventSource
     event_timestamp: datetime
     venue_size: StrictInt
-    available_seats: Optional[Dict[str, Any]]
-    update_seats: Optional[Dict[str, Any]]
-    sold_seats: Optional[Dict[str, Any]]
-    __properties: ClassVar[List[str]] = ["event_id", "event_source", "event_timestamp", "venue_size", "available_seats", "update_seats", "sold_seats"]
+    __properties: ClassVar[List[str]] = ["changed_listings", "removed_listings", "new_listings", "event_id", "event_source", "event_timestamp", "venue_size"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -76,21 +78,27 @@ class EventStoreStatsRequestSchema(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # set to None if available_seats (nullable) is None
-        # and model_fields_set contains the field
-        if self.available_seats is None and "available_seats" in self.model_fields_set:
-            _dict['available_seats'] = None
-
-        # set to None if update_seats (nullable) is None
-        # and model_fields_set contains the field
-        if self.update_seats is None and "update_seats" in self.model_fields_set:
-            _dict['update_seats'] = None
-
-        # set to None if sold_seats (nullable) is None
-        # and model_fields_set contains the field
-        if self.sold_seats is None and "sold_seats" in self.model_fields_set:
-            _dict['sold_seats'] = None
-
+        # override the default output from pydantic by calling `to_dict()` of each item in changed_listings (list)
+        _items = []
+        if self.changed_listings:
+            for _item_changed_listings in self.changed_listings:
+                if _item_changed_listings:
+                    _items.append(_item_changed_listings.to_dict())
+            _dict['changed_listings'] = _items
+        # override the default output from pydantic by calling `to_dict()` of each item in removed_listings (list)
+        _items = []
+        if self.removed_listings:
+            for _item_removed_listings in self.removed_listings:
+                if _item_removed_listings:
+                    _items.append(_item_removed_listings.to_dict())
+            _dict['removed_listings'] = _items
+        # override the default output from pydantic by calling `to_dict()` of each item in new_listings (list)
+        _items = []
+        if self.new_listings:
+            for _item_new_listings in self.new_listings:
+                if _item_new_listings:
+                    _items.append(_item_new_listings.to_dict())
+            _dict['new_listings'] = _items
         return _dict
 
     @classmethod
@@ -103,13 +111,13 @@ class EventStoreStatsRequestSchema(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
+            "changed_listings": [ChangeSeat.from_dict(_item) for _item in obj["changed_listings"]] if obj.get("changed_listings") is not None else None,
+            "removed_listings": [SeatPrice.from_dict(_item) for _item in obj["removed_listings"]] if obj.get("removed_listings") is not None else None,
+            "new_listings": [SeatPrice.from_dict(_item) for _item in obj["new_listings"]] if obj.get("new_listings") is not None else None,
             "event_id": obj.get("event_id"),
             "event_source": obj.get("event_source"),
             "event_timestamp": obj.get("event_timestamp"),
-            "venue_size": obj.get("venue_size"),
-            "available_seats": obj.get("available_seats"),
-            "update_seats": obj.get("update_seats"),
-            "sold_seats": obj.get("sold_seats")
+            "venue_size": obj.get("venue_size")
         })
         return _obj
 
