@@ -18,7 +18,7 @@ import re  # noqa: F401
 import json
 
 from pydantic import BaseModel, ConfigDict, Field
-from typing import Any, ClassVar, Dict, List
+from typing import Any, ClassVar, Dict, List, Optional
 from typing_extensions import Annotated
 from event_stats_client.models.change_seat import ChangeSeat
 from event_stats_client.models.seat_price import SeatPrice
@@ -30,9 +30,9 @@ class SeatStats(BaseModel):
     SeatStats
     """ # noqa: E501
     available: Annotated[int, Field(strict=True, ge=0)]
-    changed: List[ChangeSeat]
-    removed: List[SeatPrice]
-    added: List[SeatPrice]
+    changed: Optional[List[ChangeSeat]] = None
+    removed: Optional[List[SeatPrice]] = None
+    added: Optional[List[SeatPrice]] = None
     __properties: ClassVar[List[str]] = ["available", "changed", "removed", "added"]
 
     model_config = ConfigDict(
@@ -95,6 +95,21 @@ class SeatStats(BaseModel):
                 if _item_added:
                     _items.append(_item_added.to_dict())
             _dict['added'] = _items
+        # set to None if changed (nullable) is None
+        # and model_fields_set contains the field
+        if self.changed is None and "changed" in self.model_fields_set:
+            _dict['changed'] = None
+
+        # set to None if removed (nullable) is None
+        # and model_fields_set contains the field
+        if self.removed is None and "removed" in self.model_fields_set:
+            _dict['removed'] = None
+
+        # set to None if added (nullable) is None
+        # and model_fields_set contains the field
+        if self.added is None and "added" in self.model_fields_set:
+            _dict['added'] = None
+
         return _dict
 
     @classmethod
