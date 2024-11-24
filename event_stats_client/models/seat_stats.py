@@ -17,8 +17,9 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from typing import Any, ClassVar, Dict, List
+from typing_extensions import Annotated
 from event_stats_client.models.change_seat import ChangeSeat
 from event_stats_client.models.seat_price import SeatPrice
 from typing import Optional, Set
@@ -28,10 +29,11 @@ class SeatStats(BaseModel):
     """
     SeatStats
     """ # noqa: E501
-    changed_listings: List[ChangeSeat]
-    removed_listings: List[SeatPrice]
-    new_listings: List[SeatPrice]
-    __properties: ClassVar[List[str]] = ["changed_listings", "removed_listings", "new_listings"]
+    available: Annotated[int, Field(strict=True, ge=0)]
+    changed: List[ChangeSeat]
+    removed: List[SeatPrice]
+    added: List[SeatPrice]
+    __properties: ClassVar[List[str]] = ["available", "changed", "removed", "added"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -72,27 +74,27 @@ class SeatStats(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of each item in changed_listings (list)
+        # override the default output from pydantic by calling `to_dict()` of each item in changed (list)
         _items = []
-        if self.changed_listings:
-            for _item_changed_listings in self.changed_listings:
-                if _item_changed_listings:
-                    _items.append(_item_changed_listings.to_dict())
-            _dict['changed_listings'] = _items
-        # override the default output from pydantic by calling `to_dict()` of each item in removed_listings (list)
+        if self.changed:
+            for _item_changed in self.changed:
+                if _item_changed:
+                    _items.append(_item_changed.to_dict())
+            _dict['changed'] = _items
+        # override the default output from pydantic by calling `to_dict()` of each item in removed (list)
         _items = []
-        if self.removed_listings:
-            for _item_removed_listings in self.removed_listings:
-                if _item_removed_listings:
-                    _items.append(_item_removed_listings.to_dict())
-            _dict['removed_listings'] = _items
-        # override the default output from pydantic by calling `to_dict()` of each item in new_listings (list)
+        if self.removed:
+            for _item_removed in self.removed:
+                if _item_removed:
+                    _items.append(_item_removed.to_dict())
+            _dict['removed'] = _items
+        # override the default output from pydantic by calling `to_dict()` of each item in added (list)
         _items = []
-        if self.new_listings:
-            for _item_new_listings in self.new_listings:
-                if _item_new_listings:
-                    _items.append(_item_new_listings.to_dict())
-            _dict['new_listings'] = _items
+        if self.added:
+            for _item_added in self.added:
+                if _item_added:
+                    _items.append(_item_added.to_dict())
+            _dict['added'] = _items
         return _dict
 
     @classmethod
@@ -105,9 +107,10 @@ class SeatStats(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "changed_listings": [ChangeSeat.from_dict(_item) for _item in obj["changed_listings"]] if obj.get("changed_listings") is not None else None,
-            "removed_listings": [SeatPrice.from_dict(_item) for _item in obj["removed_listings"]] if obj.get("removed_listings") is not None else None,
-            "new_listings": [SeatPrice.from_dict(_item) for _item in obj["new_listings"]] if obj.get("new_listings") is not None else None
+            "available": obj.get("available"),
+            "changed": [ChangeSeat.from_dict(_item) for _item in obj["changed"]] if obj.get("changed") is not None else None,
+            "removed": [SeatPrice.from_dict(_item) for _item in obj["removed"]] if obj.get("removed") is not None else None,
+            "added": [SeatPrice.from_dict(_item) for _item in obj["added"]] if obj.get("added") is not None else None
         })
         return _obj
 

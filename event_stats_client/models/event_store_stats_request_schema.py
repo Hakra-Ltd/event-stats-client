@@ -19,8 +19,8 @@ import json
 
 from datetime import datetime
 from pydantic import BaseModel, ConfigDict, StrictInt, StrictStr
-from typing import Any, ClassVar, Dict, List
-from event_stats_client.models.event_source import EventSource
+from typing import Any, ClassVar, Dict, List, Optional
+from event_stats_client.models.event_store_type import EventStoreType
 from event_stats_client.models.seat_stats import SeatStats
 from typing import Optional, Set
 from typing_extensions import Self
@@ -30,9 +30,9 @@ class EventStoreStatsRequestSchema(BaseModel):
     EventStoreStatsRequestSchema
     """ # noqa: E501
     event_id: StrictStr
-    event_source: EventSource
+    event_source: EventStoreType
     event_timestamp: datetime
-    venue_size: StrictInt
+    venue_size: Optional[StrictInt]
     seat_stats: SeatStats
     __properties: ClassVar[List[str]] = ["event_id", "event_source", "event_timestamp", "venue_size", "seat_stats"]
 
@@ -78,6 +78,11 @@ class EventStoreStatsRequestSchema(BaseModel):
         # override the default output from pydantic by calling `to_dict()` of seat_stats
         if self.seat_stats:
             _dict['seat_stats'] = self.seat_stats.to_dict()
+        # set to None if venue_size (nullable) is None
+        # and model_fields_set contains the field
+        if self.venue_size is None and "venue_size" in self.model_fields_set:
+            _dict['venue_size'] = None
+
         return _dict
 
     @classmethod

@@ -18,6 +18,7 @@ __version__ = "1.0.0"
 
 # import apis into sdk package
 from event_stats_client.api.health_api import HealthApi
+from event_stats_client.api.load_api import LoadApi
 from event_stats_client.api.store_api import StoreApi
 
 # import ApiClient
@@ -35,8 +36,8 @@ from event_stats_client.exceptions import ApiException
 from event_stats_client.models.base_response_schema import BaseResponseSchema
 from event_stats_client.models.change_seat import ChangeSeat
 from event_stats_client.models.current_price import CurrentPrice
-from event_stats_client.models.event_source import EventSource
 from event_stats_client.models.event_store_stats_request_schema import EventStoreStatsRequestSchema
+from event_stats_client.models.event_store_type import EventStoreType
 from event_stats_client.models.http_validation_error import HTTPValidationError
 from event_stats_client.models.previous_price import PreviousPrice
 from event_stats_client.models.seat_price import SeatPrice
