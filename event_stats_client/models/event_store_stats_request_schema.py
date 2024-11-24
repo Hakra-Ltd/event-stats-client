@@ -18,8 +18,8 @@ import re  # noqa: F401
 import json
 
 from datetime import datetime
-from pydantic import BaseModel, ConfigDict, StrictInt, StrictStr
-from typing import Any, ClassVar, Dict, List, Optional
+from pydantic import BaseModel, ConfigDict, StrictStr
+from typing import Any, ClassVar, Dict, List
 from event_stats_client.models.event_store_type import EventStoreType
 from event_stats_client.models.seat_stats import SeatStats
 from typing import Optional, Set
@@ -32,9 +32,8 @@ class EventStoreStatsRequestSchema(BaseModel):
     event_id: StrictStr
     event_source: EventStoreType
     event_timestamp: datetime
-    venue_size: Optional[StrictInt]
     seat_stats: SeatStats
-    __properties: ClassVar[List[str]] = ["event_id", "event_source", "event_timestamp", "venue_size", "seat_stats"]
+    __properties: ClassVar[List[str]] = ["event_id", "event_source", "event_timestamp", "seat_stats"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -78,11 +77,6 @@ class EventStoreStatsRequestSchema(BaseModel):
         # override the default output from pydantic by calling `to_dict()` of seat_stats
         if self.seat_stats:
             _dict['seat_stats'] = self.seat_stats.to_dict()
-        # set to None if venue_size (nullable) is None
-        # and model_fields_set contains the field
-        if self.venue_size is None and "venue_size" in self.model_fields_set:
-            _dict['venue_size'] = None
-
         return _dict
 
     @classmethod
@@ -98,7 +92,6 @@ class EventStoreStatsRequestSchema(BaseModel):
             "event_id": obj.get("event_id"),
             "event_source": obj.get("event_source"),
             "event_timestamp": obj.get("event_timestamp"),
-            "venue_size": obj.get("venue_size"),
             "seat_stats": SeatStats.from_dict(obj["seat_stats"]) if obj.get("seat_stats") is not None else None
         })
         return _obj
