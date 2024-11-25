@@ -18,8 +18,8 @@ from typing_extensions import Annotated
 
 from datetime import datetime
 from pydantic import StrictStr
-from event_stats_client.models.base_response_schema import BaseResponseSchema
 from event_stats_client.models.event_store_type import EventStoreType
+from event_stats_client.models.stats_response_schema import StatsResponseSchema
 
 from event_stats_client.api_client import ApiClient, RequestSerialized
 from event_stats_client.api_response import ApiResponse
@@ -58,9 +58,10 @@ class LoadApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> BaseResponseSchema:
+    ) -> StatsResponseSchema:
         """Get Event Stats
 
+        Get event stats
 
         :param event_id: (required)
         :type event_id: str
@@ -104,7 +105,7 @@ class LoadApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "BaseResponseSchema",
+            '200': "StatsResponseSchema",
             '422': "HTTPValidationError",
         }
         response_data = await self.api_client.call_api(
@@ -137,9 +138,10 @@ class LoadApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[BaseResponseSchema]:
+    ) -> ApiResponse[StatsResponseSchema]:
         """Get Event Stats
 
+        Get event stats
 
         :param event_id: (required)
         :type event_id: str
@@ -183,7 +185,7 @@ class LoadApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "BaseResponseSchema",
+            '200': "StatsResponseSchema",
             '422': "HTTPValidationError",
         }
         response_data = await self.api_client.call_api(
@@ -219,6 +221,7 @@ class LoadApi:
     ) -> RESTResponseType:
         """Get Event Stats
 
+        Get event stats
 
         :param event_id: (required)
         :type event_id: str
@@ -262,7 +265,7 @@ class LoadApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "BaseResponseSchema",
+            '200': "StatsResponseSchema",
             '422': "HTTPValidationError",
         }
         response_data = await self.api_client.call_api(

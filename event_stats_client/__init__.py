@@ -42,5 +42,8 @@ from event_stats_client.models.http_validation_error import HTTPValidationError
 from event_stats_client.models.previous_price import PreviousPrice
 from event_stats_client.models.seat_price import SeatPrice
 from event_stats_client.models.seat_stats import SeatStats
+from event_stats_client.models.stats_response_schema import StatsResponseSchema
+from event_stats_client.models.stats_schema import StatsSchema
+from event_stats_client.models.summary_schema import SummarySchema
 from event_stats_client.models.validation_error import ValidationError
 from event_stats_client.models.validation_error_loc_inner import ValidationErrorLocInner
