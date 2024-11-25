@@ -16,7 +16,7 @@
 # import models into model package
 from event_stats_client.models.avg_price import AvgPrice
 from event_stats_client.models.base_response_schema import BaseResponseSchema
-from event_stats_client.models.event_stats import EventStats
+from event_stats_client.models.event_seat_stats import EventSeatStats
 from event_stats_client.models.event_store_stats_request_schema import EventStoreStatsRequestSchema
 from event_stats_client.models.event_store_type import EventStoreType
 from event_stats_client.models.http_validation_error import HTTPValidationError
