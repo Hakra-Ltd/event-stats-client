@@ -35,12 +35,12 @@ from event_stats_client.exceptions import ApiException
 # import models into sdk package
 from event_stats_client.models.avg_price import AvgPrice
 from event_stats_client.models.base_response_schema import BaseResponseSchema
+from event_stats_client.models.event_stats import EventStats
 from event_stats_client.models.event_store_stats_request_schema import EventStoreStatsRequestSchema
 from event_stats_client.models.event_store_type import EventStoreType
 from event_stats_client.models.http_validation_error import HTTPValidationError
 from event_stats_client.models.max_price import MaxPrice
 from event_stats_client.models.min_price import MinPrice
-from event_stats_client.models.seat_stats import SeatStats
 from event_stats_client.models.section_stats import SectionStats
 from event_stats_client.models.stats_response_schema import StatsResponseSchema
 from event_stats_client.models.stats_schema import StatsSchema

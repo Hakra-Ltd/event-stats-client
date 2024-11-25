@@ -20,8 +20,8 @@ import json
 from datetime import datetime
 from pydantic import BaseModel, ConfigDict, StrictStr
 from typing import Any, ClassVar, Dict, List
+from event_stats_client.models.event_stats import EventStats
 from event_stats_client.models.event_store_type import EventStoreType
-from event_stats_client.models.seat_stats import SeatStats
 from typing import Optional, Set
 from typing_extensions import Self
 
@@ -32,7 +32,7 @@ class EventStoreStatsRequestSchema(BaseModel):
     event_id: StrictStr
     event_source: EventStoreType
     event_timestamp: datetime
-    seat_stats: SeatStats
+    seat_stats: EventStats
     __properties: ClassVar[List[str]] = ["event_id", "event_source", "event_timestamp", "seat_stats"]
 
     model_config = ConfigDict(
@@ -92,7 +92,7 @@ class EventStoreStatsRequestSchema(BaseModel):
             "event_id": obj.get("event_id"),
             "event_source": obj.get("event_source"),
             "event_timestamp": obj.get("event_timestamp"),
-            "seat_stats": SeatStats.from_dict(obj["seat_stats"]) if obj.get("seat_stats") is not None else None
+            "seat_stats": EventStats.from_dict(obj["seat_stats"]) if obj.get("seat_stats") is not None else None
         })
         return _obj
 
