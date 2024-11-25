@@ -23,11 +23,11 @@ from typing import Union, Any, List, Set, TYPE_CHECKING, Optional, Dict
 from typing_extensions import Literal, Self
 from pydantic import Field
 
-PREVIOUSPRICE_ANY_OF_SCHEMAS = ["float", "str"]
+AVGPRICE_ANY_OF_SCHEMAS = ["float", "str"]
 
-class PreviousPrice(BaseModel):
+class AvgPrice(BaseModel):
     """
-    PreviousPrice
+    AvgPrice
     """
 
     # data type: float
@@ -57,7 +57,7 @@ class PreviousPrice(BaseModel):
 
     @field_validator('actual_instance')
     def actual_instance_must_validate_anyof(cls, v):
-        instance = PreviousPrice.model_construct()
+        instance = AvgPrice.model_construct()
         error_messages = []
         # validate data type: float
         try:
@@ -73,7 +73,7 @@ class PreviousPrice(BaseModel):
             error_messages.append(str(e))
         if error_messages:
             # no match
-            raise ValueError("No match found when setting the actual_instance in PreviousPrice with anyOf schemas: float, str. Details: " + ", ".join(error_messages))
+            raise ValueError("No match found when setting the actual_instance in AvgPrice with anyOf schemas: float, str. Details: " + ", ".join(error_messages))
         else:
             return v
 
@@ -107,7 +107,7 @@ class PreviousPrice(BaseModel):
 
         if error_messages:
             # no match
-            raise ValueError("No match found when deserializing the JSON string into PreviousPrice with anyOf schemas: float, str. Details: " + ", ".join(error_messages))
+            raise ValueError("No match found when deserializing the JSON string into AvgPrice with anyOf schemas: float, str. Details: " + ", ".join(error_messages))
         else:
             return instance
 

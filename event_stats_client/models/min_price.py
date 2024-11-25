@@ -23,11 +23,11 @@ from typing import Union, Any, List, Set, TYPE_CHECKING, Optional, Dict
 from typing_extensions import Literal, Self
 from pydantic import Field
 
-CURRENTPRICE_ANY_OF_SCHEMAS = ["float", "str"]
+MINPRICE_ANY_OF_SCHEMAS = ["float", "str"]
 
-class CurrentPrice(BaseModel):
+class MinPrice(BaseModel):
     """
-    CurrentPrice
+    MinPrice
     """
 
     # data type: float
@@ -57,7 +57,7 @@ class CurrentPrice(BaseModel):
 
     @field_validator('actual_instance')
     def actual_instance_must_validate_anyof(cls, v):
-        instance = CurrentPrice.model_construct()
+        instance = MinPrice.model_construct()
         error_messages = []
         # validate data type: float
         try:
@@ -73,7 +73,7 @@ class CurrentPrice(BaseModel):
             error_messages.append(str(e))
         if error_messages:
             # no match
-            raise ValueError("No match found when setting the actual_instance in CurrentPrice with anyOf schemas: float, str. Details: " + ", ".join(error_messages))
+            raise ValueError("No match found when setting the actual_instance in MinPrice with anyOf schemas: float, str. Details: " + ", ".join(error_messages))
         else:
             return v
 
@@ -107,7 +107,7 @@ class CurrentPrice(BaseModel):
 
         if error_messages:
             # no match
-            raise ValueError("No match found when deserializing the JSON string into CurrentPrice with anyOf schemas: float, str. Details: " + ", ".join(error_messages))
+            raise ValueError("No match found when deserializing the JSON string into MinPrice with anyOf schemas: float, str. Details: " + ", ".join(error_messages))
         else:
             return instance
 

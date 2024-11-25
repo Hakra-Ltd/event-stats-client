@@ -17,18 +17,24 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from typing import Any, ClassVar, Dict, List
-from event_stats_client.models.current_price import CurrentPrice
+from typing_extensions import Annotated
+from event_stats_client.models.avg_price import AvgPrice
+from event_stats_client.models.max_price import MaxPrice
+from event_stats_client.models.min_price import MinPrice
 from typing import Optional, Set
 from typing_extensions import Self
 
-class SeatPrice(BaseModel):
+class SectionStats(BaseModel):
     """
-    SeatPrice
+    SectionStats
     """ # noqa: E501
-    current_price: CurrentPrice
-    __properties: ClassVar[List[str]] = ["current_price"]
+    count: Annotated[int, Field(strict=True, ge=0)]
+    min_price: MinPrice
+    max_price: MaxPrice
+    avg_price: AvgPrice
+    __properties: ClassVar[List[str]] = ["count", "min_price", "max_price", "avg_price"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -48,7 +54,7 @@ class SeatPrice(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of SeatPrice from a JSON string"""
+        """Create an instance of SectionStats from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -69,14 +75,20 @@ class SeatPrice(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of current_price
-        if self.current_price:
-            _dict['current_price'] = self.current_price.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of min_price
+        if self.min_price:
+            _dict['min_price'] = self.min_price.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of max_price
+        if self.max_price:
+            _dict['max_price'] = self.max_price.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of avg_price
+        if self.avg_price:
+            _dict['avg_price'] = self.avg_price.to_dict()
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of SeatPrice from a dict"""
+        """Create an instance of SectionStats from a dict"""
         if obj is None:
             return None
 
@@ -84,7 +96,10 @@ class SeatPrice(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "current_price": CurrentPrice.from_dict(obj["current_price"]) if obj.get("current_price") is not None else None
+            "count": obj.get("count"),
+            "min_price": MinPrice.from_dict(obj["min_price"]) if obj.get("min_price") is not None else None,
+            "max_price": MaxPrice.from_dict(obj["max_price"]) if obj.get("max_price") is not None else None,
+            "avg_price": AvgPrice.from_dict(obj["avg_price"]) if obj.get("avg_price") is not None else None
         })
         return _obj
 
