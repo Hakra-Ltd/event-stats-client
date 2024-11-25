@@ -18,7 +18,7 @@ import re  # noqa: F401
 import json
 
 from pydantic import BaseModel, ConfigDict
-from typing import Any, ClassVar, Dict, List
+from typing import Any, ClassVar, Dict, List, Optional
 from event_stats_client.models.section_stats import SectionStats
 from typing import Optional, Set
 from typing_extensions import Self
@@ -28,9 +28,9 @@ class EventSeatStats(BaseModel):
     EventSeatStats
     """ # noqa: E501
     available: SectionStats
-    changed: SectionStats
-    removed: SectionStats
-    added: SectionStats
+    changed: Optional[SectionStats]
+    removed: Optional[SectionStats]
+    added: Optional[SectionStats]
     __properties: ClassVar[List[str]] = ["available", "changed", "removed", "added"]
 
     model_config = ConfigDict(
@@ -84,6 +84,21 @@ class EventSeatStats(BaseModel):
         # override the default output from pydantic by calling `to_dict()` of added
         if self.added:
             _dict['added'] = self.added.to_dict()
+        # set to None if changed (nullable) is None
+        # and model_fields_set contains the field
+        if self.changed is None and "changed" in self.model_fields_set:
+            _dict['changed'] = None
+
+        # set to None if removed (nullable) is None
+        # and model_fields_set contains the field
+        if self.removed is None and "removed" in self.model_fields_set:
+            _dict['removed'] = None
+
+        # set to None if added (nullable) is None
+        # and model_fields_set contains the field
+        if self.added is None and "added" in self.model_fields_set:
+            _dict['added'] = None
+
         return _dict
 
     @classmethod
