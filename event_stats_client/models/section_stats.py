@@ -22,6 +22,7 @@ from typing import Any, ClassVar, Dict, List
 from typing_extensions import Annotated
 from event_stats_client.models.avg_price import AvgPrice
 from event_stats_client.models.max_price import MaxPrice
+from event_stats_client.models.median_price import MedianPrice
 from event_stats_client.models.min_price import MinPrice
 from typing import Optional, Set
 from typing_extensions import Self
@@ -34,7 +35,8 @@ class SectionStats(BaseModel):
     min_price: MinPrice
     max_price: MaxPrice
     avg_price: AvgPrice
-    __properties: ClassVar[List[str]] = ["count", "min_price", "max_price", "avg_price"]
+    median_price: MedianPrice
+    __properties: ClassVar[List[str]] = ["count", "min_price", "max_price", "avg_price", "median_price"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -84,6 +86,9 @@ class SectionStats(BaseModel):
         # override the default output from pydantic by calling `to_dict()` of avg_price
         if self.avg_price:
             _dict['avg_price'] = self.avg_price.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of median_price
+        if self.median_price:
+            _dict['median_price'] = self.median_price.to_dict()
         return _dict
 
     @classmethod
@@ -99,7 +104,8 @@ class SectionStats(BaseModel):
             "count": obj.get("count"),
             "min_price": MinPrice.from_dict(obj["min_price"]) if obj.get("min_price") is not None else None,
             "max_price": MaxPrice.from_dict(obj["max_price"]) if obj.get("max_price") is not None else None,
-            "avg_price": AvgPrice.from_dict(obj["avg_price"]) if obj.get("avg_price") is not None else None
+            "avg_price": AvgPrice.from_dict(obj["avg_price"]) if obj.get("avg_price") is not None else None,
+            "median_price": MedianPrice.from_dict(obj["median_price"]) if obj.get("median_price") is not None else None
         })
         return _obj
 

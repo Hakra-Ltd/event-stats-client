@@ -18,9 +18,8 @@ import re  # noqa: F401
 import json
 
 from datetime import datetime
-from pydantic import BaseModel, ConfigDict, Field
-from typing import Any, ClassVar, Dict, List
-from typing_extensions import Annotated
+from pydantic import BaseModel, ConfigDict
+from typing import Any, ClassVar, Dict, List, Optional
 from event_stats_client.models.summary_schema import SummarySchema
 from typing import Optional, Set
 from typing_extensions import Self
@@ -30,10 +29,10 @@ class StatsSchema(BaseModel):
     StatsSchema
     """ # noqa: E501
     timestamp: datetime
-    available: Annotated[int, Field(strict=True, ge=0)]
-    changed: SummarySchema
-    removed: SummarySchema
-    added: SummarySchema
+    available: Optional[SummarySchema] = None
+    changed: Optional[SummarySchema] = None
+    removed: Optional[SummarySchema] = None
+    added: Optional[SummarySchema] = None
     __properties: ClassVar[List[str]] = ["timestamp", "available", "changed", "removed", "added"]
 
     model_config = ConfigDict(
@@ -75,6 +74,9 @@ class StatsSchema(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of available
+        if self.available:
+            _dict['available'] = self.available.to_dict()
         # override the default output from pydantic by calling `to_dict()` of changed
         if self.changed:
             _dict['changed'] = self.changed.to_dict()
@@ -97,7 +99,7 @@ class StatsSchema(BaseModel):
 
         _obj = cls.model_validate({
             "timestamp": obj.get("timestamp"),
-            "available": obj.get("available"),
+            "available": SummarySchema.from_dict(obj["available"]) if obj.get("available") is not None else None,
             "changed": SummarySchema.from_dict(obj["changed"]) if obj.get("changed") is not None else None,
             "removed": SummarySchema.from_dict(obj["removed"]) if obj.get("removed") is not None else None,
             "added": SummarySchema.from_dict(obj["added"]) if obj.get("added") is not None else None

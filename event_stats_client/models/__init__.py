@@ -21,6 +21,7 @@ from event_stats_client.models.event_store_stats_request_schema import EventStor
 from event_stats_client.models.event_store_type import EventStoreType
 from event_stats_client.models.http_validation_error import HTTPValidationError
 from event_stats_client.models.max_price import MaxPrice
+from event_stats_client.models.median_price import MedianPrice
 from event_stats_client.models.min_price import MinPrice
 from event_stats_client.models.section_stats import SectionStats
 from event_stats_client.models.stats_response_schema import StatsResponseSchema

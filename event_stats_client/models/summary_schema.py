@@ -17,8 +17,9 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, StrictInt, StrictStr
-from typing import Any, ClassVar, Dict, List
+from pydantic import BaseModel, ConfigDict, Field, StrictStr
+from typing import Any, ClassVar, Dict, List, Optional
+from typing_extensions import Annotated
 from typing import Optional, Set
 from typing_extensions import Self
 
@@ -26,10 +27,10 @@ class SummarySchema(BaseModel):
     """
     SummarySchema
     """ # noqa: E501
-    count: StrictInt
-    min_price: StrictStr
-    max_price: StrictStr
-    avg_price: StrictStr
+    count: Optional[Annotated[int, Field(strict=True, ge=0)]] = 0
+    min_price: Optional[StrictStr] = '0'
+    max_price: Optional[StrictStr] = '0'
+    avg_price: Optional[StrictStr] = '0'
     __properties: ClassVar[List[str]] = ["count", "min_price", "max_price", "avg_price"]
 
     model_config = ConfigDict(
@@ -83,10 +84,10 @@ class SummarySchema(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "count": obj.get("count"),
-            "min_price": obj.get("min_price"),
-            "max_price": obj.get("max_price"),
-            "avg_price": obj.get("avg_price")
+            "count": obj.get("count") if obj.get("count") is not None else 0,
+            "min_price": obj.get("min_price") if obj.get("min_price") is not None else '0',
+            "max_price": obj.get("max_price") if obj.get("max_price") is not None else '0',
+            "avg_price": obj.get("avg_price") if obj.get("avg_price") is not None else '0'
         })
         return _obj
 
