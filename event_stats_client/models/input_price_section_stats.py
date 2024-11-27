@@ -19,19 +19,16 @@ import json
 
 from pydantic import BaseModel, ConfigDict
 from typing import Any, ClassVar, Dict, List, Optional
-from event_stats_client.models.section_stats import SectionStats
+from event_stats_client.models.input_event_stats_schema_section_prices_value_inner import InputEventStatsSchemaSectionPricesValueInner
 from typing import Optional, Set
 from typing_extensions import Self
 
-class EventSeatStats(BaseModel):
+class InputPriceSectionStats(BaseModel):
     """
-    EventSeatStats
+    InputPriceSectionStats
     """ # noqa: E501
-    available: SectionStats
-    changed: Optional[SectionStats]
-    removed: Optional[SectionStats]
-    added: Optional[SectionStats]
-    __properties: ClassVar[List[str]] = ["available", "changed", "removed", "added"]
+    prices: Optional[List[InputEventStatsSchemaSectionPricesValueInner]]
+    __properties: ClassVar[List[str]] = ["prices"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -51,7 +48,7 @@ class EventSeatStats(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of EventSeatStats from a JSON string"""
+        """Create an instance of InputPriceSectionStats from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -72,38 +69,23 @@ class EventSeatStats(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of available
-        if self.available:
-            _dict['available'] = self.available.to_dict()
-        # override the default output from pydantic by calling `to_dict()` of changed
-        if self.changed:
-            _dict['changed'] = self.changed.to_dict()
-        # override the default output from pydantic by calling `to_dict()` of removed
-        if self.removed:
-            _dict['removed'] = self.removed.to_dict()
-        # override the default output from pydantic by calling `to_dict()` of added
-        if self.added:
-            _dict['added'] = self.added.to_dict()
-        # set to None if changed (nullable) is None
+        # override the default output from pydantic by calling `to_dict()` of each item in prices (list)
+        _items = []
+        if self.prices:
+            for _item_prices in self.prices:
+                if _item_prices:
+                    _items.append(_item_prices.to_dict())
+            _dict['prices'] = _items
+        # set to None if prices (nullable) is None
         # and model_fields_set contains the field
-        if self.changed is None and "changed" in self.model_fields_set:
-            _dict['changed'] = None
-
-        # set to None if removed (nullable) is None
-        # and model_fields_set contains the field
-        if self.removed is None and "removed" in self.model_fields_set:
-            _dict['removed'] = None
-
-        # set to None if added (nullable) is None
-        # and model_fields_set contains the field
-        if self.added is None and "added" in self.model_fields_set:
-            _dict['added'] = None
+        if self.prices is None and "prices" in self.model_fields_set:
+            _dict['prices'] = None
 
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of EventSeatStats from a dict"""
+        """Create an instance of InputPriceSectionStats from a dict"""
         if obj is None:
             return None
 
@@ -111,10 +93,7 @@ class EventSeatStats(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "available": SectionStats.from_dict(obj["available"]) if obj.get("available") is not None else None,
-            "changed": SectionStats.from_dict(obj["changed"]) if obj.get("changed") is not None else None,
-            "removed": SectionStats.from_dict(obj["removed"]) if obj.get("removed") is not None else None,
-            "added": SectionStats.from_dict(obj["added"]) if obj.get("added") is not None else None
+            "prices": [InputEventStatsSchemaSectionPricesValueInner.from_dict(_item) for _item in obj["prices"]] if obj.get("prices") is not None else None
         })
         return _obj
 
