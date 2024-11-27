@@ -17,23 +17,20 @@ import pprint
 import re  # noqa: F401
 import json
 
-from datetime import datetime
-from pydantic import BaseModel, ConfigDict, StrictStr
+from pydantic import BaseModel, ConfigDict
 from typing import Any, ClassVar, Dict, List
-from event_stats_client.models.event_store_type import EventStoreType
-from event_stats_client.models.input_event_stats_schema import InputEventStatsSchema
+from event_stats_client.models.overall_metrics import OverallMetrics
+from event_stats_client.models.section_volatility_metrics import SectionVolatilityMetrics
 from typing import Optional, Set
 from typing_extensions import Self
 
-class EventStoreStatsRequestSchema(BaseModel):
+class VolatilityMetrics(BaseModel):
     """
-    EventStoreStatsRequestSchema
+    VolatilityMetrics
     """ # noqa: E501
-    event_id: StrictStr
-    event_source: EventStoreType
-    event_timestamp: datetime
-    seat_stats: InputEventStatsSchema
-    __properties: ClassVar[List[str]] = ["event_id", "event_source", "event_timestamp", "seat_stats"]
+    section: Dict[str, SectionVolatilityMetrics]
+    overall: OverallMetrics
+    __properties: ClassVar[List[str]] = ["section", "overall"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -53,7 +50,7 @@ class EventStoreStatsRequestSchema(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of EventStoreStatsRequestSchema from a JSON string"""
+        """Create an instance of VolatilityMetrics from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -74,14 +71,21 @@ class EventStoreStatsRequestSchema(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of seat_stats
-        if self.seat_stats:
-            _dict['seat_stats'] = self.seat_stats.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of each value in section (dict)
+        _field_dict = {}
+        if self.section:
+            for _key_section in self.section:
+                if self.section[_key_section]:
+                    _field_dict[_key_section] = self.section[_key_section].to_dict()
+            _dict['section'] = _field_dict
+        # override the default output from pydantic by calling `to_dict()` of overall
+        if self.overall:
+            _dict['overall'] = self.overall.to_dict()
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of EventStoreStatsRequestSchema from a dict"""
+        """Create an instance of VolatilityMetrics from a dict"""
         if obj is None:
             return None
 
@@ -89,10 +93,13 @@ class EventStoreStatsRequestSchema(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "event_id": obj.get("event_id"),
-            "event_source": obj.get("event_source"),
-            "event_timestamp": obj.get("event_timestamp"),
-            "seat_stats": InputEventStatsSchema.from_dict(obj["seat_stats"]) if obj.get("seat_stats") is not None else None
+            "section": dict(
+                (_k, SectionVolatilityMetrics.from_dict(_v))
+                for _k, _v in obj["section"].items()
+            )
+            if obj.get("section") is not None
+            else None,
+            "overall": OverallMetrics.from_dict(obj["overall"]) if obj.get("overall") is not None else None
         })
         return _obj
 

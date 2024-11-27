@@ -17,23 +17,20 @@ import pprint
 import re  # noqa: F401
 import json
 
-from datetime import datetime
-from pydantic import BaseModel, ConfigDict, StrictStr
+from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing import Any, ClassVar, Dict, List
-from event_stats_client.models.event_store_type import EventStoreType
-from event_stats_client.models.input_event_stats_schema import InputEventStatsSchema
+from typing_extensions import Annotated
 from typing import Optional, Set
 from typing_extensions import Self
 
-class EventStoreStatsRequestSchema(BaseModel):
+class SingleVolatilityMetrics(BaseModel):
     """
-    EventStoreStatsRequestSchema
+    SingleVolatilityMetrics
     """ # noqa: E501
-    event_id: StrictStr
-    event_source: EventStoreType
-    event_timestamp: datetime
-    seat_stats: InputEventStatsSchema
-    __properties: ClassVar[List[str]] = ["event_id", "event_source", "event_timestamp", "seat_stats"]
+    count: Annotated[int, Field(strict=True, ge=0)]
+    price_volatility: StrictStr
+    price_velocity: StrictStr
+    __properties: ClassVar[List[str]] = ["count", "price_volatility", "price_velocity"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -53,7 +50,7 @@ class EventStoreStatsRequestSchema(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of EventStoreStatsRequestSchema from a JSON string"""
+        """Create an instance of SingleVolatilityMetrics from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -74,14 +71,11 @@ class EventStoreStatsRequestSchema(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of seat_stats
-        if self.seat_stats:
-            _dict['seat_stats'] = self.seat_stats.to_dict()
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of EventStoreStatsRequestSchema from a dict"""
+        """Create an instance of SingleVolatilityMetrics from a dict"""
         if obj is None:
             return None
 
@@ -89,10 +83,9 @@ class EventStoreStatsRequestSchema(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "event_id": obj.get("event_id"),
-            "event_source": obj.get("event_source"),
-            "event_timestamp": obj.get("event_timestamp"),
-            "seat_stats": InputEventStatsSchema.from_dict(obj["seat_stats"]) if obj.get("seat_stats") is not None else None
+            "count": obj.get("count"),
+            "price_volatility": obj.get("price_volatility"),
+            "price_velocity": obj.get("price_velocity")
         })
         return _obj
 
