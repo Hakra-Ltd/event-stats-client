@@ -40,7 +40,7 @@ class LoadApi:
 
 
     @validate_call
-    async def get_event_stats_v1_stats_post(
+    async def get_event_stats_v1_stats_get(
         self,
         event_id: StrictStr,
         event_store: EventStoreType,
@@ -93,7 +93,7 @@ class LoadApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._get_event_stats_v1_stats_post_serialize(
+        _param = self._get_event_stats_v1_stats_get_serialize(
             event_id=event_id,
             event_store=event_store,
             start_interval=start_interval,
@@ -120,7 +120,7 @@ class LoadApi:
 
 
     @validate_call
-    async def get_event_stats_v1_stats_post_with_http_info(
+    async def get_event_stats_v1_stats_get_with_http_info(
         self,
         event_id: StrictStr,
         event_store: EventStoreType,
@@ -173,7 +173,7 @@ class LoadApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._get_event_stats_v1_stats_post_serialize(
+        _param = self._get_event_stats_v1_stats_get_serialize(
             event_id=event_id,
             event_store=event_store,
             start_interval=start_interval,
@@ -200,7 +200,7 @@ class LoadApi:
 
 
     @validate_call
-    async def get_event_stats_v1_stats_post_without_preload_content(
+    async def get_event_stats_v1_stats_get_without_preload_content(
         self,
         event_id: StrictStr,
         event_store: EventStoreType,
@@ -253,7 +253,7 @@ class LoadApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._get_event_stats_v1_stats_post_serialize(
+        _param = self._get_event_stats_v1_stats_get_serialize(
             event_id=event_id,
             event_store=event_store,
             start_interval=start_interval,
@@ -275,7 +275,7 @@ class LoadApi:
         return response_data.response
 
 
-    def _get_event_stats_v1_stats_post_serialize(
+    def _get_event_stats_v1_stats_get_serialize(
         self,
         event_id,
         event_store,
@@ -354,7 +354,7 @@ class LoadApi:
         ]
 
         return self.api_client.param_serialize(
-            method='POST',
+            method='GET',
             resource_path='/v1/stats',
             path_params=_path_params,
             query_params=_query_params,
