@@ -56,6 +56,7 @@ class StoreApi:
     ) -> BaseResponseSchema:
         """Store Event Stats
 
+        Store new event stats
 
         :param event_store_stats_request_schema: (required)
         :type event_store_stats_request_schema: EventStoreStatsRequestSchema
@@ -123,6 +124,7 @@ class StoreApi:
     ) -> ApiResponse[BaseResponseSchema]:
         """Store Event Stats
 
+        Store new event stats
 
         :param event_store_stats_request_schema: (required)
         :type event_store_stats_request_schema: EventStoreStatsRequestSchema
@@ -190,6 +192,7 @@ class StoreApi:
     ) -> RESTResponseType:
         """Store Event Stats
 
+        Store new event stats
 
         :param event_store_stats_request_schema: (required)
         :type event_store_stats_request_schema: EventStoreStatsRequestSchema
@@ -252,7 +255,9 @@ class StoreApi:
         _query_params: List[Tuple[str, str]] = []
         _header_params: Dict[str, Optional[str]] = _headers or {}
         _form_params: List[Tuple[str, str]] = []
-        _files: Dict[str, Union[str, bytes]] = {}
+        _files: Dict[
+            str, Union[str, bytes, List[str], List[bytes], List[Tuple[str, bytes]]]
+        ] = {}
         _body_params: Optional[bytes] = None
 
         # process the path parameters

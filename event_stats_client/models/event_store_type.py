@@ -29,6 +29,8 @@ class EventStoreType(str, Enum):
     TICKETMASTER = 'ticketmaster'
     VIVIDSEATS = 'vividseats'
     EVENUE = 'evenue'
+    TICKPICK = 'tickpick'
+    STUBHUB = 'stubhub'
 
     @classmethod
     def from_json(cls, json_str: str) -> Self:
