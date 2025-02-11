@@ -21,6 +21,7 @@ from datetime import datetime
 from pydantic import BaseModel, ConfigDict
 from typing import Any, ClassVar, Dict, List, Optional
 from event_stats_client.models.summary_schema import SummarySchema
+from event_stats_client.models.volatility_metrics import VolatilityMetrics
 from typing import Optional, Set
 from typing_extensions import Self
 
@@ -33,7 +34,8 @@ class StatsSchema(BaseModel):
     changed: Optional[SummarySchema] = None
     removed: Optional[SummarySchema] = None
     added: Optional[SummarySchema] = None
-    __properties: ClassVar[List[str]] = ["timestamp", "available", "changed", "removed", "added"]
+    volatility_metrics: VolatilityMetrics
+    __properties: ClassVar[List[str]] = ["timestamp", "available", "changed", "removed", "added", "volatility_metrics"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -86,6 +88,9 @@ class StatsSchema(BaseModel):
         # override the default output from pydantic by calling `to_dict()` of added
         if self.added:
             _dict['added'] = self.added.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of volatility_metrics
+        if self.volatility_metrics:
+            _dict['volatility_metrics'] = self.volatility_metrics.to_dict()
         return _dict
 
     @classmethod
@@ -102,7 +107,8 @@ class StatsSchema(BaseModel):
             "available": SummarySchema.from_dict(obj["available"]) if obj.get("available") is not None else None,
             "changed": SummarySchema.from_dict(obj["changed"]) if obj.get("changed") is not None else None,
             "removed": SummarySchema.from_dict(obj["removed"]) if obj.get("removed") is not None else None,
-            "added": SummarySchema.from_dict(obj["added"]) if obj.get("added") is not None else None
+            "added": SummarySchema.from_dict(obj["added"]) if obj.get("added") is not None else None,
+            "volatility_metrics": VolatilityMetrics.from_dict(obj["volatility_metrics"]) if obj.get("volatility_metrics") is not None else None
         })
         return _obj
 
