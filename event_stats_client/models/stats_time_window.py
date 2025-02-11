@@ -18,22 +18,23 @@ from enum import Enum
 from typing_extensions import Self
 
 
-class EventStoreType(str, Enum):
+class StatsTimeWindow(int, Enum):
     """
-    EventStoreType
+    StatsTimeWindow
     """
 
     """
     allowed enum values
     """
-    TICKETMASTER = 'ticketmaster'
-    VIVIDSEATS = 'vividseats'
-    EVENUE = 'evenue'
-    TICKPICK = 'tickpick'
+    NUMBER_1 = 1
+    NUMBER_3 = 3
+    NUMBER_6 = 6
+    NUMBER_12 = 12
+    NUMBER_24 = 24
 
     @classmethod
     def from_json(cls, json_str: str) -> Self:
-        """Create an instance of EventStoreType from a JSON string"""
+        """Create an instance of StatsTimeWindow from a JSON string"""
         return cls(json.loads(json_str))
 
 
