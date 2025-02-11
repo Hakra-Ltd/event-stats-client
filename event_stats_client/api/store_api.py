@@ -56,6 +56,7 @@ class StoreApi:
     ) -> BaseResponseSchema:
         """Store Event Stats
 
+        Store new event stats
 
         :param event_store_stats_request_schema: (required)
         :type event_store_stats_request_schema: EventStoreStatsRequestSchema
@@ -123,6 +124,7 @@ class StoreApi:
     ) -> ApiResponse[BaseResponseSchema]:
         """Store Event Stats
 
+        Store new event stats
 
         :param event_store_stats_request_schema: (required)
         :type event_store_stats_request_schema: EventStoreStatsRequestSchema
@@ -190,6 +192,7 @@ class StoreApi:
     ) -> RESTResponseType:
         """Store Event Stats
 
+        Store new event stats
 
         :param event_store_stats_request_schema: (required)
         :type event_store_stats_request_schema: EventStoreStatsRequestSchema

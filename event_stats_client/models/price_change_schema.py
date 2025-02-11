@@ -17,23 +17,20 @@ import pprint
 import re  # noqa: F401
 import json
 
-from datetime import datetime
-from pydantic import BaseModel, ConfigDict, StrictStr
+from pydantic import BaseModel, ConfigDict
 from typing import Any, ClassVar, Dict, List
-from event_stats_client.models.event_store_type import EventStoreType
-from event_stats_client.models.input_event_stats_schema import InputEventStatsSchema
+from event_stats_client.models.new_price import NewPrice
+from event_stats_client.models.old_price import OldPrice
 from typing import Optional, Set
 from typing_extensions import Self
 
-class EventStoreStatsRequestSchema(BaseModel):
+class PriceChangeSchema(BaseModel):
     """
-    EventStoreStatsRequestSchema
+    PriceChangeSchema
     """ # noqa: E501
-    event_id: StrictStr
-    event_source: EventStoreType
-    event_timestamp: datetime
-    seat_stats: InputEventStatsSchema
-    __properties: ClassVar[List[str]] = ["event_id", "event_source", "event_timestamp", "seat_stats"]
+    old_price: OldPrice
+    new_price: NewPrice
+    __properties: ClassVar[List[str]] = ["old_price", "new_price"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -53,7 +50,7 @@ class EventStoreStatsRequestSchema(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of EventStoreStatsRequestSchema from a JSON string"""
+        """Create an instance of PriceChangeSchema from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -74,14 +71,17 @@ class EventStoreStatsRequestSchema(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of seat_stats
-        if self.seat_stats:
-            _dict['seat_stats'] = self.seat_stats.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of old_price
+        if self.old_price:
+            _dict['old_price'] = self.old_price.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of new_price
+        if self.new_price:
+            _dict['new_price'] = self.new_price.to_dict()
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of EventStoreStatsRequestSchema from a dict"""
+        """Create an instance of PriceChangeSchema from a dict"""
         if obj is None:
             return None
 
@@ -89,10 +89,8 @@ class EventStoreStatsRequestSchema(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "event_id": obj.get("event_id"),
-            "event_source": obj.get("event_source"),
-            "event_timestamp": obj.get("event_timestamp"),
-            "seat_stats": InputEventStatsSchema.from_dict(obj["seat_stats"]) if obj.get("seat_stats") is not None else None
+            "old_price": OldPrice.from_dict(obj["old_price"]) if obj.get("old_price") is not None else None,
+            "new_price": NewPrice.from_dict(obj["new_price"]) if obj.get("new_price") is not None else None
         })
         return _obj
 

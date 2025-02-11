@@ -17,23 +17,22 @@ import pprint
 import re  # noqa: F401
 import json
 
-from datetime import datetime
-from pydantic import BaseModel, ConfigDict, StrictStr
+from pydantic import BaseModel, ConfigDict
 from typing import Any, ClassVar, Dict, List
-from event_stats_client.models.event_store_type import EventStoreType
-from event_stats_client.models.input_event_stats_schema import InputEventStatsSchema
+from event_stats_client.models.single_event_time import SingleEventTime
+from event_stats_client.models.sort_stats_by import SortStatsBy
+from event_stats_client.models.stats_time_window import StatsTimeWindow
 from typing import Optional, Set
 from typing_extensions import Self
 
-class EventStoreStatsRequestSchema(BaseModel):
+class StatsTimeResponseSchema(BaseModel):
     """
-    EventStoreStatsRequestSchema
+    StatsTimeResponseSchema
     """ # noqa: E501
-    event_id: StrictStr
-    event_source: EventStoreType
-    event_timestamp: datetime
-    seat_stats: InputEventStatsSchema
-    __properties: ClassVar[List[str]] = ["event_id", "event_source", "event_timestamp", "seat_stats"]
+    time_window: StatsTimeWindow
+    sort_by: SortStatsBy
+    events: List[SingleEventTime]
+    __properties: ClassVar[List[str]] = ["time_window", "sort_by", "events"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -53,7 +52,7 @@ class EventStoreStatsRequestSchema(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of EventStoreStatsRequestSchema from a JSON string"""
+        """Create an instance of StatsTimeResponseSchema from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -74,14 +73,18 @@ class EventStoreStatsRequestSchema(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of seat_stats
-        if self.seat_stats:
-            _dict['seat_stats'] = self.seat_stats.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of each item in events (list)
+        _items = []
+        if self.events:
+            for _item_events in self.events:
+                if _item_events:
+                    _items.append(_item_events.to_dict())
+            _dict['events'] = _items
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of EventStoreStatsRequestSchema from a dict"""
+        """Create an instance of StatsTimeResponseSchema from a dict"""
         if obj is None:
             return None
 
@@ -89,10 +92,9 @@ class EventStoreStatsRequestSchema(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "event_id": obj.get("event_id"),
-            "event_source": obj.get("event_source"),
-            "event_timestamp": obj.get("event_timestamp"),
-            "seat_stats": InputEventStatsSchema.from_dict(obj["seat_stats"]) if obj.get("seat_stats") is not None else None
+            "time_window": obj.get("time_window"),
+            "sort_by": obj.get("sort_by"),
+            "events": [SingleEventTime.from_dict(_item) for _item in obj["events"]] if obj.get("events") is not None else None
         })
         return _obj
 
